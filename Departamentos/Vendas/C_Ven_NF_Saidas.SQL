@@ -1,5 +1,5 @@
 SELECT
-	 COUNT(*) AS "Teste",
+	 COUNT(*) AS "Total de Notas Fiscais",
 	 T0."DocDate",
 	 TO_NVARCHAR(T0."DocDate",
 	 'YYYY-MM') as "Mes",
