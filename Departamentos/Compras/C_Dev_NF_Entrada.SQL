@@ -39,22 +39,22 @@ SELECT
     WHEN T10."QryGroup1" = 'Y' THEN 'Fornecedor'
     ELSE 'Outros' 
 END AS "Fornecedor"
-FROM SBO_INPOWER_PROD."ORPC" T0 
-LEFT JOIN SBO_INPOWER_PROD."RPC1" T1 ON T0."DocEntry" = T1."DocEntry" 
-LEFT JOIN SBO_INPOWER_PROD."OSLP" T2 ON T0."SlpCode" = T2."SlpCode" 
-LEFT JOIN SBO_INPOWER_PROD."OITM" T4 ON T1."ItemCode" = T4."ItemCode" 
-LEFT JOIN SBO_INPOWER_PROD."OITB" T5 ON T4."ItmsGrpCod" = T5."ItmsGrpCod" 
-LEFT JOIN SBO_INPOWER_PROD."OCTG" T6 ON T0."GroupNum" = T6."GroupNum" 
-LEFT JOIN SBO_INPOWER_PROD."ITM1" T7 ON T4."ItemCode" = T7."ItemCode" 
-LEFT JOIN SBO_INPOWER_PROD."OPLN" T8 ON T7."PriceList" = T8."ListNum" 
-LEFT JOIN SBO_INPOWER_PROD."OMRC" T9 ON T4."FirmCode" = T9."FirmCode" 
-LEFT JOIN SBO_INPOWER_PROD."OCRD" T10 ON T0."CardCode" = T10."CardCode" 
-LEFT JOIN SBO_INPOWER_PROD."RPC12" T12 ON T0."DocEntry" = T12."DocEntry" 
-LEFT JOIN SBO_INPOWER_PROD."NFN1" T13 ON T13."SeqCode" = T0."SeqCode" 
-LEFT JOIN SBO_INPOWER_PROD."CRD7" Z1 ON T10."CardCode" = Z1."CardCode"
-LEFT JOIN SBO_INPOWER_PROD."OUSG" Z4 ON T1."Usage" = Z4."ID"
-LEFT JOIN SBO_INPOWER_PROD."OACT" Z5 ON T0."CtlAccount" = Z5."AcctCode"
-LEFT JOIN SBO_INPOWER_PROD."OUSR" Z6 ON T0."UserSign" = Z6."USERID"
+FROM "ORPC" T0 
+LEFT JOIN "RPC1" T1 ON T0."DocEntry" = T1."DocEntry" 
+LEFT JOIN "OSLP" T2 ON T0."SlpCode" = T2."SlpCode" 
+LEFT JOIN "OITM" T4 ON T1."ItemCode" = T4."ItemCode" 
+LEFT JOIN "OITB" T5 ON T4."ItmsGrpCod" = T5."ItmsGrpCod" 
+LEFT JOIN "OCTG" T6 ON T0."GroupNum" = T6."GroupNum" 
+LEFT JOIN "ITM1" T7 ON T4."ItemCode" = T7."ItemCode" 
+LEFT JOIN "OPLN" T8 ON T7."PriceList" = T8."ListNum" 
+LEFT JOIN "OMRC" T9 ON T4."FirmCode" = T9."FirmCode" 
+LEFT JOIN "OCRD" T10 ON T0."CardCode" = T10."CardCode" 
+LEFT JOIN "RPC12" T12 ON T0."DocEntry" = T12."DocEntry" 
+LEFT JOIN "NFN1" T13 ON T13."SeqCode" = T0."SeqCode" 
+LEFT JOIN "CRD7" Z1 ON T10."CardCode" = Z1."CardCode"
+LEFT JOIN "OUSG" Z4 ON T1."Usage" = Z4."ID"
+LEFT JOIN "OACT" Z5 ON T0."CtlAccount" = Z5."AcctCode"
+LEFT JOIN "OUSR" Z6 ON T0."UserSign" = Z6."USERID"
 WHERE T8."ListNum" = '5' 
 AND T0."CANCELED" = 'N'
 GROUP BY 
