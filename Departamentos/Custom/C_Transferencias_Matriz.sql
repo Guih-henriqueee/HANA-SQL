@@ -1,10 +1,10 @@
 SELECT 
-    T0."DocNum", 
-    T0."DocDate",
-    T0."VATRegNum", 
-    T2."Usage", 
+    T0."DocNum" AS "Nº Documento NS", 
+    T0."DocDate" AS "Data Documento NS",
+    T0."VATRegNum" AS "CNPJ Origem", 
+    T2."Usage" AS "Natureza Operação", 
     SUM(T3."LineTotal") AS "Total Linha", 
-    T0."Serial", 
+    T0."Serial" AS "Nº NF", 
     Z4."CreateDate" AS "Data de Criação NE",
     Z5."CreateDate" AS "Data de Criação DS",
     CAST(T0."Header" AS NVARCHAR(255)) AS "Abertura", 
@@ -15,7 +15,12 @@ INNER JOIN INV12 T1 ON T0."DocEntry" = T1."DocEntry"
 INNER JOIN OUSG T2 ON T1."MainUsage" = T2."ID" 
 INNER JOIN INV1 T3 ON T0."DocEntry" = T3."DocEntry"
 INNER JOIN OUSR Z0 ON T0."UserSign" = Z0."USERID"
-LEFT JOIN OPCH Z5 ON T0."Serial"  = Z5."Serial"
+LEFT JOIN ORIN Z5 ON T0."Serial"  = Z5."Serial" AND (
+        (T0."VATRegNum" = '17.642.282/0005-57' AND Z5."CardCode" = 'CLJ001') OR
+        (T0."VATRegNum" = '17.642.282/0007-19' AND Z5."CardCode" = 'CLJ001') OR
+        (T0."VATRegNum" = '17.642.282/0004-76' AND Z5."CardCode" = 'CLJ001') OR
+        (T0."VATRegNum" = '17.642.282/0003-95' AND Z5."CardCode" = 'CLJ001') 
+    )
 LEFT JOIN OPCH Z4 
     ON T0."Serial" = Z4."Serial"
     AND (
@@ -26,9 +31,8 @@ LEFT JOIN OPCH Z4
     )
 WHERE 
     T0."CardCode" = 'CLJ001' 
-    AND T0."CANCELED" = 'N'  
+    ---AND T0."CANCELED" = 'N'  
     AND T2."ID" = 47 
-    AND T0."DocDate" >= '2025-01-01' 
     AND T0."VATRegNum" IN ('17.642.282/0005-57', '17.642.282/0007-19', '17.642.282/0004-76', '17.642.282/0003-95')  
 GROUP BY 
     T0."DocNum", T0."DocDate", T0."VATRegNum", 
