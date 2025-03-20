@@ -1,12 +1,17 @@
 SELECT 
+    CASE
+        WHEN T0."CANCELED" = 'Y' THEN 'Cancelado'
+        WHEN T0."CANCELED" = 'N' THEN 'Fechado'
+        ELSE T0."CANCELED"
+    END AS "Status",
     T0."DocNum" AS "Nº Documento NS", 
     T0."DocDate" AS "Data Documento NS",
     T0."VATRegNum" AS "CNPJ Origem", 
     T2."Usage" AS "Natureza Operação", 
     SUM(T3."LineTotal") AS "Total Linha", 
     T0."Serial" AS "Nº NF", 
-    Z4."CreateDate" AS "Data de Criação NE",
-    Z5."CreateDate" AS "Data de Criação DS",
+    Z4."DocNum" AS "Nº Documento NE",
+    Z5."DocNum" AS "Nº Documento DS",
     CAST(T0."Header" AS NVARCHAR(255)) AS "Abertura", 
     CAST(T0."Footer" AS NVARCHAR(255)) AS "Encerramento", 
     Z0."U_NAME" AS "Usuário"
@@ -27,16 +32,16 @@ LEFT JOIN OPCH Z4
         (T0."VATRegNum" = '17.642.282/0005-57' AND Z4."CardCode" = 'F001577') OR
         (T0."VATRegNum" = '17.642.282/0007-19' AND Z4."CardCode" = 'F002550') OR
         (T0."VATRegNum" = '17.642.282/0004-76' AND Z4."CardCode" = 'F002085') OR
-        (T0."VATRegNum" = '17.642.282/0003-95' AND Z4."CardCode" = 'F002550') 
+        (T0."VATRegNum" = '17.642.282/0003-95' AND Z4."CardCode" = 'F001708') 
     )
 WHERE 
-    T0."CardCode" = 'CLJ001' 
+    T0."CardCode" = 'CLJ001' --- Cadastro da Matriz
     ---AND T0."CANCELED" = 'N'  
-    AND T2."ID" = 47 
-    AND T0."VATRegNum" IN ('17.642.282/0005-57', '17.642.282/0007-19', '17.642.282/0004-76', '17.642.282/0003-95')  
+    AND T2."ID" = 47 -- 47 = Utilização de Transferencia
+    AND T0."VATRegNum" IN ('17.642.282/0005-57', '17.642.282/0007-19', '17.642.282/0004-76', '17.642.282/0003-95')  --- Filiais de Origem
 GROUP BY 
-    T0."DocNum", T0."DocDate", T0."VATRegNum", 
-    T2."Usage", T0."Serial", Z4."CreateDate",Z5."CreateDate", 
+    T0."CANCELED", T0."DocNum", T0."DocDate", T0."VATRegNum", 
+    T2."Usage", T0."Serial", Z4."DocNum",Z5."DocNum", 
     CAST(T0."Header" AS NVARCHAR(255)), CAST(T0."Footer" AS NVARCHAR(255)),
     Z0."U_NAME"
 ORDER BY "Total Linha" DESC;
