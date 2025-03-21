@@ -1,4 +1,4 @@
-((SELECT DISTINCT
+CREATE OR REPLACE VIEW SBO_INPOWER_PROD."VisaoRebates" AS((SELECT DISTINCT
 
 T0."DocEntry" as "Documento",
 --T0."Serial" as "NF",

@@ -14,9 +14,18 @@ SELECT
     SUM(T1."Quantity") AS "Quantidade Total",
     SUM(T1."LineTotal") AS "Valor Total",
     AVG(T1."PriceBefDi") AS "Preço Médio Antes do Desconto",
-    (SUM(T1."Quantity") * T7."Price") AS "Custo Total",
+    (SUM(T1."Quantity") *  (CASE
+		 WHEN T1."U_INP_CUSTOMANUAL" IS NULL OR T1."U_INP_CUSTOMANUAL" = 0 THEN D1."Price"
+	 ELSE T1."U_INP_CUSTOMANUAL" 
+		 END)) AS "Custo Total",
     AVG(T1."PriceBefDi") / CASE 
-        WHEN T7."Price" > 0 THEN T7."Price" 
+        WHEN  (CASE
+		 WHEN T1."U_INP_CUSTOMANUAL" IS NULL OR T1."U_INP_CUSTOMANUAL" = 0 THEN T7."Price"
+	 ELSE T1."U_INP_CUSTOMANUAL" 
+		 END) > 0 THEN  (CASE
+		 WHEN T1."U_INP_CUSTOMANUAL" IS NULL OR T1."U_INP_CUSTOMANUAL" = 0 THEN T7."Price"
+	 ELSE T1."U_INP_CUSTOMANUAL" 
+		 END) 
         ELSE 1.0 
     END AS "Markup",
     T2."SlpName" AS "Nome do Vendedor",
@@ -69,8 +78,9 @@ GROUP BY
     T1."WhsCode"
     
     
-    ----- ATUALIZAÇÃO 19-03-2025
-    ----- Reversão informação de Preço de Custo 
-    ----- Guilherme Martins
-    
+    /*
+    *       ATUALIZAÇÃO 20-03-2025 - Guilherme Martins
+    *       Tratamento da informação de Custo Manual na data da venda
+    *
+    */
     ;
