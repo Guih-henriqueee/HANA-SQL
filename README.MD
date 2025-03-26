@@ -255,5 +255,3 @@ Se quiser adicionar ou modificar consultas:
 Em caso de dúvidas ou sugestões, entre em contato com o mantenedor do repositório. 
 
 🗂️ **Organize. Consulte. Otimize.** 🚀
-
-### Last Update 25/05
