@@ -1,38 +1,38 @@
-CREATE PROCEDURE PROC_Vendas_X_Compras ()
+CREATE OR REPLACE PROCEDURE PROC_Vendas_X_Compras ()
 AS
 /*Select 1 From OINV T50 Where T50."DocDate" <= '[%0]'*/
 /*Select 1 From OINV T51 Where T51."DocDate" >= '[%1]'*/
 /*Select 1 From OSLP T52 Where T52."SlpName" <= '[%2]'*/
 /*Select 1 From OSLP T53 Where T53."SlpName" >= '[%3]'*/
-
+ 
 /*Select 1 From OITM T54 Where T54."ItemCode" <= '[%4]'*/
 /*Select 1 From OITM T55 Where T55."ItemCode" >= '[%5]'*/
-
+ 
 /*Select 1 From OITB T56 Where T56."ItmsGrpNam" <= '[%6]'*/
 /*Select 1 From OITB T57 Where T57."ItmsGrpNam" >= '[%7]'*/
-
+ 
 /*Select 1 From OBPL T58 Where T58."BPLName" <= '[%8]'*/
 /*Select 1 From OBPL T59 Where T59."BPLName" >= '[%9]'*/
-
+ 
 /*Select 1 From OCRD T60 Where T60."CardName" = '[%10]'*/
---DO BEGIN 
- Datade nvarchar(100);
- Dataate nvarchar(100);
-
- Vendedorde nvarchar(254);
- Vendedorate nvarchar(254);
-
- Itemde nvarchar(100);
- Itemate nvarchar(100);
-
- GrpItemde nvarchar(100);
- GrpItemate nvarchar(100);
-
- Filialde nvarchar(100);
- Filialate nvarchar(100);
-
- FornUlt nvarchar(100);
-
+--DO BEGIN
+Datade nvarchar(100);
+Dataate nvarchar(100);
+ 
+Vendedorde nvarchar(254);
+Vendedorate nvarchar(254);
+ 
+Itemde nvarchar(100);
+Itemate nvarchar(100);
+ 
+GrpItemde nvarchar(100);
+GrpItemate nvarchar(100);
+ 
+Filialde nvarchar(100);
+Filialate nvarchar(100);
+ 
+FornUlt nvarchar(100);
+ 
 BEGIN
 --Datade :='20200101';
 --Dataate :='20200930';
@@ -45,26 +45,26 @@ BEGIN
 --Filialde :='0';
 --Filialate :='zzz';
 --FornUlt :='%GLOBALK TECNOLOGIA INFORMATICA LTDA%';
-
+ 
 Select Case When '' = '' Then '20210101' else '[%0]' END into Datade from dummy;
 Select Case When '' = '' Then '20301231' else '[%1]' END into Dataate from dummy;
-
+ 
 Select Case When '' = '' Then '0' else '[%2]' END into Vendedorde from dummy;
 Select Case When '' = '' Then 'zzz' else '[%3]' END into Vendedorate from dummy;
-
+ 
 Select Case When '' = '' Then '0' else '[%4]' END into Itemde from dummy;
 Select Case When '' = '' Then 'zzz' else '[%5]' END into Itemate from dummy;
-
+ 
 Select Case When '' = '' Then '0' else '[%6]' END into GrpItemde from dummy;
 Select Case When '' = '' Then 'zzz' else '[%7]' END into GrpItemate from dummy;
-
+ 
 Select Case When '' = '' Then '0' else '[%8]' END into Filialde from dummy;
 Select Case When '' = '' Then 'zzz' else '[%9]' END into Filialate from dummy;
-
+ 
 Select Case When '' = '' Then '%%' else '%[%10]%' END into FornUlt from dummy;
-
-
-
+ 
+ 
+ 
 NFS=
 Select
 	'NFS' as "Tipo Documento",
@@ -95,7 +95,7 @@ Select
               null Vazio2,
               null Vazio3,
               null Vazio4,
-              null Vazio5, 
+              null Vazio5,
               t9."U_Comprador",
               t8."Usage"
 From OINV as t0
@@ -108,15 +108,16 @@ Inner Join OCTG as t5 on t5."GroupNum" = t0."GroupNum"
 Left Join OCRD as t7 on t7."CardCode" = t2."CardCode" --PN Item
 Left Join OUSG as t8 on t1."Usage" = t8."ID" --Utilização
 Left Join OMRC as t9 on t9."FirmCode" = t2."FirmCode" --Fabricante/Comprador
-Where 
+Where
 	t0."CANCELED" = 'N'
 	and TO_DATE(t0."DocDate") Between TO_DATE(:Datade) and TO_DATE(:Dataate)
 	and t1."ItemCode" Between :Itemde and :Itemate
 	and t3."ItmsGrpNam" Between :GrpItemde and :GrpItemate
 	and t00."BPLName" Between :Filialde and :Filialate
 	and t4."SlpName" Between :Vendedorde and :Vendedorate
+	and "DocNum" != '2390071'
 ;
-
+ 
 NFSDEV=
 Select
 	'NFSDEV' as "Tipo Documento",
@@ -147,7 +148,7 @@ Select
               null Vazio2,
               null Vazio3,
               null Vazio4,
-              null Vazio5, 
+              null Vazio5,
               t9."U_Comprador",
               t8."Usage"
 From ORIN as t0
@@ -160,33 +161,34 @@ Inner Join OCTG as t5 on t5."GroupNum" = t0."GroupNum"
 Left Join OCRD as t7 on t7."CardCode" = t2."CardCode" --PN Item
 Left Join OUSG as t8 on t1."Usage" = t8."ID" --Utilização
 Left Join OMRC as t9 on t9."FirmCode" = t2."FirmCode" --Fabricante/Comprador
-Where 
+Where
 	t0."CANCELED" = 'N' AND t0."SeqCode" <> 1
 	and TO_DATE(t0."DocDate") Between TO_DATE(:Datade) and TO_DATE(:Dataate)
 	and t1."ItemCode" Between :Itemde and :Itemate
 	and t3."ItmsGrpNam" Between :GrpItemde and :GrpItemate
 	and t00."BPLName" Between :Filialde and :Filialate
 	and t4."SlpName" Between :Vendedorde and :Vendedorate
+	and "DocNum" != '2390071'
 ;
-
+ 
 NOTAS=
-Select 
+Select
 	t0.*
 From :NFS as t0
 Union all
-Select 
+Select
 	t0.*
 From :NFSDEV as t0;
-
+ 
 FiltroItens=
-Select 
-	DISTINCT 
+Select
+	DISTINCT
 	t0."ItemCode"
 From :NOTAS as t0;
-
-
+ 
+ 
 NFE0=
-Select 
+Select
 	t0."DocEntry",
 	t0."DocNum",
 	t0."CardCode",
@@ -208,9 +210,9 @@ Inner Join PCH4 as t2 on t2."DocEntry" = t0."DocEntry" and t2."LineNum" = t1."Li
 Inner Join :FiltroItens as t9 on t9."ItemCode" = t1."ItemCode"
 Where TO_DATE(t0."DocDate") <= TO_DATE(:Dataate)
 ;
-
+ 
 NFE1=
-Select 
+Select
 	t0."DocEntry",
 	t0."DocNum",
 	t0."CardCode",
@@ -240,9 +242,9 @@ Group By
 	t0."StockSum",
 	t0."WhsCode",
 	t0."TaxInPrice";
-
+ 
 NFE=
-Select 
+Select
 	ROW_NUMBER() over (Partition By t0."ItemCode" Order By t0."DocDate" Desc) as "Ordem",
 	t0."DocEntry",
 	t0."DocNum",
@@ -272,15 +274,15 @@ Group By
 	t0."TaxCode",
 	t0."StockSum",
 	t0."WhsCode";
-
+ 
 NOTAS1=
-Select 
+Select
 	t0.*,
 	(Select MIN(t9."Ordem") From :NFE as t9 Where t9."ItemCode" = t0."ItemCode" and t9."DocDate" <= t0."DocDate") as "NFE_Ordem"
 From :NOTAS as t0;
-
+ 
 NOTAS2=
-Select 
+Select
 	t0.*,
 	t1."CardCode" as "Cód. Fornecedor Ultima Compra",
 	t1."CardName" as "Fornecedor Ultima Compra",
@@ -294,9 +296,9 @@ Select
 From :NOTAS1 as t0
 Left Join :NFE as t1 on t1."ItemCode" = t0."ItemCode" and t1."Ordem" = t0."NFE_Ordem"
 Left Join ITM1 as t2 on t2."PriceList" = 5 and t0."ItemCode" = t2."ItemCode";
-
+ 
 Saida=
-Select 
+Select
 	t0."Tipo Documento",
 	t0."BPLName" as "Filial",
 	t0."DocNum" as "Num. SAP",
@@ -343,12 +345,11 @@ Left Join "@OKS_GRD_CATEG" as t2 on t00."U_OKS_GRD_Categ" = t2."Code"
 Left Join "@OKS_GRD_MARCA" as t3 on t00."U_OKS_GRD_Marca" = t3."Code"
 --Where t0."Fornecedor Ultima Compra" Like :FornUlt
 ;
-Select 
-	t0.* 
+Select
+	t0.*
 From :Saida as t0
 Order By
 	t0."Data Nota",
 	t0."Cód. Item";
-
+ 
 END
-
