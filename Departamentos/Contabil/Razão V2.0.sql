@@ -1,17 +1,21 @@
-
-
 WITH NotasFiscais AS (
 (
 	(
-	SELECT 'ORIN' AS "Tabela", "Serial", "ObjType", "TransId", "CANCELED"
+	SELECT 'ORIN' AS "Tabela", "Serial", "ObjType", "TransId"
 	FROM  SBO_INPOWER_PROD.ORIN
 	
 	WHERE "TransId" IS NOT NULL 
 	 )
 	UNION ALL
 	(
-		SELECT 'OINV' AS "Tabela", "Serial", "ObjType",  "TransId", "CANCELED" 
+		SELECT 'OINV' AS "Tabela", "Serial", "ObjType",  "TransId"
 		FROM  SBO_INPOWER_PROD.OINV 
+		WHERE "TransId" IS NOT NULL 
+	
+		)UNION ALL 
+		(
+		SELECT 'OPCH' AS "Tabela", "Serial", "ObjType",  "TransId"
+		FROM  SBO_INPOWER_PROD.OPCH 
 		WHERE "TransId" IS NOT NULL 
 	
 		)
@@ -41,7 +45,7 @@ SELECT
 A."TransId",
 CAST ( A."RefDate" AS DATE) AS "Data", 
 COALESCE(N1."Serial", N2."Serial", N3."Serial",0) AS "Nota Fiscal",
-COALESCE (N3."CANCELED", 0),
+
  CASE
         WHEN A."TransType" = 13  THEN 'NS (A/R Invoice)'
         WHEN A."TransType" = 14  THEN 'DS (A/R Credit Memo)'
@@ -76,6 +80,7 @@ LEFT JOIN Notas_CR N2 ON
 LEFT JOIN NotasFiscais N3 ON   
     (A."TransType" = 13 AND A."TransId" = N3."TransId" AND  A."TransId" = N3."TransId") 
     OR (A."TransType" = 14 AND A."TransId" = N3."TransId" AND  A."TransId" = N3."TransId") 
+    OR (A."TransType" = 18 AND A."TransId" = N3."TransId" AND  A."TransId" = N3."TransId") 
      
     
     
@@ -85,7 +90,7 @@ LEFT JOIN SBO_INPOWER_PROD.OCRD C ON A."ContraAct" = C."CardCode"
 LEFT JOIN SBO_INPOWER_PROD.OACT D ON A."ContraAct" = D."AcctCode"
 
 WHERE 
-	A."RefDate" BETWEEN '20250101' AND '20250131'
+	A."RefDate" BETWEEN '20250101' AND '20250331' AND "TransType" = 18
 	/*A."TransId" = 11303893  OR (A."BaseRef" = '1036211' AND A."TransType" = 18)*/
 GROUP BY B."AcctName", CASE
         WHEN A."TransType" = 13  THEN 'NS (A/R Invoice)'
@@ -102,5 +107,5 @@ GROUP BY B."AcctName", CASE
         WHEN A."TransType" = 67  THEN 'TF'
         WHEN A."TransType" = 202 THEN 'Ordem de Produção'
         ELSE 'Outros Tipos'
-    END, A."TransId", A."RefDate", B."Segment_0", B."Segment_0", IFNULL(D."Segment_0", C."CardCode"), IFNULL(D."AcctName", C."CardName"), A."LineMemo", A."BPLName", A."VatRegNum", COALESCE(N1."Serial", N2."Serial", N3."Serial",0), COALESCE (N3."CANCELED", 0)
-
+    END, A."TransId", A."RefDate", B."Segment_0", B."Segment_0", IFNULL(D."Segment_0", C."CardCode"), IFNULL(D."AcctName", C."CardName"), A."LineMemo", A."BPLName", A."VatRegNum", COALESCE(N1."Serial", N2."Serial", N3."Serial",0)
+   
