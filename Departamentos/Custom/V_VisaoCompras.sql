@@ -120,6 +120,20 @@ ESTOQUES_FULL_TRANSITO AS (
     
 ),
 
+
+VENDAVEL(
+SELECT "ItemCode", "WhsCode", "OnHand", "OnOrder", "IsCommited" FROM OWHS
+),
+
+NAO_VENDAVEL(
+
+),
+
+TOTAL(
+
+),
+
+
 -- Vendas no mês atual com preço médio
 VENDAS_MES_ATUAL AS (SELECT 
         "ItemCode", 
