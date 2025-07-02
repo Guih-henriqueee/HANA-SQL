@@ -39,4 +39,4 @@ FROM
 							  ,'Ã¼','u')
 							  ,'Ã½','y')
 							  ,'Ã§','c')
-							  ,'Ã±','n')) =UPPER('BonfimPaulista'))
+							  ,'Ã±','n')) =UPPER('RibeiraodosIndios'))
