@@ -160,7 +160,7 @@ DATA_COMPRA_COMPRADOR AS (
     SELECT 
         "ItemCode",
         MAX("DocDate") AS "Data_Ultima_Compra",
-        MAX("Buyer") AS "Comprador"
+        MAX("Comprador") AS "Comprador"
     FROM "SBO_INPOWER_PROD"."View_Relatorio_Marcos_90"
     GROUP BY "ItemCode"
 ),
@@ -252,17 +252,6 @@ BASE AS (
 
 -- Resultado final
 SELECT BASE.*
-        CASE 
-                WHEN "ESTQ. MAG FULL"                                   > 0   				        THEN 'MAG Full'
-	        WHEN "ESTQ. MELI SP FULL"                               > 0 				        THEN 'MELI SP'
-	        WHEN "ESTQ. MELI MG FULL"                               > 0					THEN 'MELI MG'
-	        WHEN "ESTQ. AMZ FULL"                                   > 0 					THEN 'AMAZON'
-	        WHEN "ESTQ. SHP FULL"                                   > 0 					THEN 'SHOPEE'
-	        WHEN "TOTAL FULL"       = 0 AND "TOTAL TRANSITO"        > 0                                     THEN 'Em Transito'
-	        ELSE 'Sem FULL'             END "Estoque Full",
-	CASE 
-                WHEN "TOTAL FULL"                                       > 0                                     THEN 'Sim' 
-                ELSE 'Não'                  END "Flag_Em_Transito" 
 
 FROM BASE
 	
